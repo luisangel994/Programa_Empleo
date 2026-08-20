@@ -149,6 +149,8 @@ def ejecutar_monitoreo():
         enviar_notificaciones(nuevas_ofertas)
     else:
         print("✅ Todo al día. No se detectaron nuevas plazas sin notificar.")
+        from notifier import enviar_telegram_confirmacion
+        enviar_telegram_confirmacion(len(todas_las_ofertas))
 
 if __name__ == "__main__":
     ejecutar_monitoreo()

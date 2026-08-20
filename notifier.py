@@ -114,6 +114,34 @@ def enviar_telegram(nuevas_ofertas):
         print(f"❌ Error al conectar con Telegram API: {e}")
         return False
 
+def enviar_telegram_confirmacion(total_vigentes):
+    """
+    Envía un mensaje de confirmación de ejecución de GitHub Actions cuando todo está al día.
+    """
+    bot_token = os.environ.get("TELEGRAM_BOT_TOKEN", "8875701698:AAFrQE2akmicChOEmhWoA6qzrcEk4mIXy0Q")
+    chat_id = os.environ.get("TELEGRAM_CHAT_ID", "190425566")
+
+    if not bot_token or not chat_id:
+        return False
+
+    texto = f"✅ *VALENCIA TECH OPS - MONITOREO EJECUTADO EN LA NUBE*\n\n" \
+            f"El script se ha ejecutado correctamente desde GitHub Actions.\n" \
+            f"📊 Convocatorias en seguimiento activo: *{total_vigentes} plazas*\n" \
+            f"🔍 *Estado:* Todo al día. No hay aperturas o bolsas nuevas en las últimas horas."
+
+    try:
+        url_api = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+        requests.post(url_api, json={
+            "chat_id": chat_id,
+            "text": texto,
+            "parse_mode": "Markdown"
+        }, timeout=10)
+        print("📱 Mensaje de confirmación de estado enviado a Telegram.")
+        return True
+    except Exception as e:
+        print(f"⚠️ Error enviando estado a Telegram: {e}")
+        return False
+
 def enviar_notificaciones(nuevas_ofertas):
     """
     Envía notificaciones por email vía SMTP y por Telegram.
