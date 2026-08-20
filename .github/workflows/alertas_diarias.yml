@@ -6,7 +6,6 @@ on:
     - cron: '0 7 * * *'
   workflow_dispatch: # Permite ejecución manual desde GitHub
 
-# Permisos para poder guardar el archivo vistas.json en el repositorio
 permissions:
   contents: write
 
@@ -37,9 +36,10 @@ jobs:
         run: python scraper.py
 
       - name: Guardar Histórico Actualizado en Git
+        continue-on-error: true
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action Bot"
-          git add vistas.json || exit 0
-          git commit -m "chore: actualizar histórico de convocatorias [skip ci]" || exit 0
-          git push || exit 0
+          git add vistas.json
+          git commit -m "chore: actualizar histórico de convocatorias [skip ci]"
+          git push
