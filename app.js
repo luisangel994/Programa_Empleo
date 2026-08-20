@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast('💬 Enviando mensaje en tiempo real a tu Telegram...');
     btnTestTelegram.disabled = true;
 
-    const messageText = `⚡ *VALENCIA TECH OPS - NOTIFICACIÓN DE PRUEBA*\n\n¡Hola! Tu sistema de alertas de empleo público en Valencia para *Ingeniería Electrónica y Automatización* está conectado correctamente a Telegram.\n\n📅 Fecha: ${new Date().toLocaleDateString('es-ES')}\n🎯 Estado: Activo y monitoreando EMT, FGV, ADIF y GVA.`;
+    const messageText = `⚡ *VALENCIA TECH OPS - NOTIFICACIÓN DE PRUEBA*\n\n¡Hola! Tu sistema de alertas de empleo público en Valencia para *Ingeniería Electrónica y Automatización* está conectado correctamente a Telegram.\n\n📅 Fecha: ${new Date().toLocaleDateString('es-ES')}\n🎯 Estado: Activo y monitoreando EMT, FGV, ADIF y GVA.\n\n📱 *Acceso al Dashboard Completo:*\n🌐 [Abrir Panel Web Interactivo en el Móvil](https://luisangel994.github.io/Programa_Empleo/)`;
 
     try {
       const resp = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {

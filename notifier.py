@@ -95,6 +95,9 @@ def enviar_telegram(nuevas_ofertas):
         url = of.get('url', '#')
         texto += f"🏛️ *{org}*\n📋 {tit}\n🔗 [Ver Bases Oficiales]({url})\n\n"
 
+    texto += "📱 *Acceso al Dashboard Completo:*\n" \
+             "🌐 [Abrir Panel Web Interactivo en el Móvil](https://luisangel994.github.io/Programa_Empleo/)"
+
     try:
         url_api = f"https://api.telegram.org/bot{bot_token}/sendMessage"
         resp = requests.post(url_api, json={
@@ -127,7 +130,9 @@ def enviar_telegram_confirmacion(total_vigentes):
     texto = f"✅ *VALENCIA TECH OPS - MONITOREO EJECUTADO EN LA NUBE*\n\n" \
             f"El script se ha ejecutado correctamente desde GitHub Actions.\n" \
             f"📊 Convocatorias en seguimiento activo: *{total_vigentes} plazas*\n" \
-            f"🔍 *Estado:* Todo al día. No hay aperturas o bolsas nuevas en las últimas horas."
+            f"🔍 *Estado:* Todo al día. No hay aperturas o bolsas nuevas en las últimas horas.\n\n" \
+            f"📱 *Acceso al Dashboard Completo:*\n" \
+            f"🌐 [Abrir Panel Web Interactivo en el Móvil](https://luisangel994.github.io/Programa_Empleo/)"
 
     try:
         url_api = f"https://api.telegram.org/bot{bot_token}/sendMessage"
