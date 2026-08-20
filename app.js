@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'Personal Laboral Fijo',
       matchScore: 98,
       location: 'Valencia Capital',
+      deadlineDate: '2026-03-25',
       deadline: 'Hasta 25/03/2026',
       status: 'open',
       valenciano: 'B2 / C1 (Baremable como mérito)',
@@ -36,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'Funcionario de Carrera / Bolsa de Interinos',
       matchScore: 96,
       location: 'Valencia Capital',
+      deadlineDate: null,
       deadline: 'Seguimiento de Bolsa Activa',
       status: 'bolsa',
       valenciano: 'C1 (Grau Mitjà) - Obligatorio',
@@ -57,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'Personal Laboral Fijo',
       matchScore: 95,
       location: 'Valencia & Provincia',
+      deadlineDate: null,
       deadline: 'OEP 2026 en preparación (DOGV)',
       status: 'upcoming',
       valenciano: 'B2 / C1 (Mérito clave en concurso)',
@@ -78,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'Funcionario de Carrera / Oposición',
       matchScore: 92,
       location: 'Comunidad Valenciana',
+      deadlineDate: '2026-06-01',
       deadline: 'Mayo / Junio 2026 (Previsión)',
       status: 'upcoming',
       valenciano: 'C1 + Capacitació per a l\'Ensenyament',
@@ -99,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'Personal Laboral Fijo (OEP Nacional)',
       matchScore: 94,
       location: 'Valencia (Corredor Mediterráneo)',
+      deadlineDate: null,
       deadline: 'Abierto / Próximo (Ver Web Adif)',
       status: 'open',
       valenciano: 'No necesario (Ámbito estatal)',
@@ -120,6 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'Personal Laboral Fijo',
       matchScore: 93,
       location: 'Valencia (Delegación Levante)',
+      deadlineDate: null,
       deadline: 'Selección continua / 2º Trimestre',
       status: 'open',
       valenciano: 'No imprescindible (Empresa Estatal)',
@@ -141,6 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'Personal Laboral Fijo',
       matchScore: 90,
       location: 'Puerto de Valencia',
+      deadlineDate: '2026-03-25',
       deadline: 'Hasta 25/03/2026',
       status: 'open',
       valenciano: 'Valorado como mérito',
@@ -162,6 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'Personal Laboral Fijo',
       matchScore: 91,
       location: 'Área Metropolitana de Valencia',
+      deadlineDate: null,
       deadline: 'Convocatoria Abierta',
       status: 'open',
       valenciano: 'B2 / C1 (Valorado)',
@@ -176,10 +184,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   ];
 
-  let currentConvocatorias = [...initialConvocatorias];
+  // Verificar automáticamente si alguna fecha límite ya ha caducado
+  const todayStr = new Date().toISOString().split('T')[0];
+  let currentConvocatorias = initialConvocatorias.map(item => {
+    if (item.deadlineDate && item.deadlineDate < todayStr) {
+      return { ...item, status: 'closed', deadline: `Finalizado en ${item.deadlineDate}` };
+    }
+    return item;
+  });
+
   let activeEntityFilter = 'all';
   let activeLevelFilter = 'all';
   let activeLangFilter = 'all';
+  let activeStatusFilter = 'active_only'; // Por defecto muestra solo plazas activas/abiertas/bolsas
   let searchQuery = '';
 
   // Elementos DOM
@@ -251,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (response.ok) {
         const data = await response.json();
-        showToast(`✅ Conexión con API oficial exitosa. ${data.items ? data.items.length : 0} convocatorias encontradas.`);
+        showToast(`✅ Conexión con API oficial exitosa. ${data.items ? data.items.length : 0} convocatorias abiertas encontradas.`);
       } else {
         throw new Error('API no disponible temporalmente');
       }
@@ -283,7 +300,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!token || !chatId) {
       showToast('⚠️ Introduce tu Telegram Bot Token y Chat ID arriba para enviar el mensaje real.');
-      alert('Para probar Telegram en vivo:\n1. Habla con @BotFather en Telegram -> /newbot para obtener tu Bot Token.\n2. Habla con @userinfobot -> obtén tu Chat ID.\n3. Ingrésalos en las casillas correspondientes y pulsa este botón.');
       return;
     }
 
@@ -320,13 +336,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // Explicación de prueba de Email
   btnTestEmail.addEventListener('click', () => {
     const email = emailDestInput.value || 'luisangel994@gmail.com';
-    alert(`📧 PRUEBA DE EMAIL PARA: ${email}\n\nLos navegadores web bloquean el envío directo de correos SMTP por razones de seguridad.\n\nPara probar el envío REAL de correo a tu cuenta:\n1. Abre tu terminal de comandos.\n2. Ejecuta: python test_send.py\n3. Sigue las instrucciones interactivas en pantalla.\n\nTambién te enviará un correo automáticamente el script 'python scraper.py' o GitHub Actions cada mañana.`);
-    showToast(`💡 Para probar el envío de Email real a ${email}, ejecuta "python test_send.py" en la terminal.`);
+    alert(`📧 PRUEBA DE EMAIL PARA: ${email}\n\nLos navegadores web bloquean el envío directo de correos SMTP por razones de seguridad.\n\nPara probar el envío REAL de correo a tu cuenta:\n1. Abre tu terminal de comandos.\n2. Ejecuta: py test_send.py\n3. Sigue las instrucciones interactivas en pantalla.\n\nTambién te enviará un correo automáticamente el script 'py scraper.py' o GitHub Actions cada mañana.`);
+    showToast(`💡 Para probar el envío de Email real a ${email}, ejecuta "py test_send.py" en la terminal.`);
   });
 
   // Función de filtrado
   function filterAndRender() {
     const filtered = currentConvocatorias.filter(item => {
+      // Filtrar ofertas cerradas si el filtro de activas está seleccionado
+      if (activeStatusFilter === 'active_only' && item.status === 'closed') return false;
+
       if (activeEntityFilter !== 'all' && item.category !== activeEntityFilter) return false;
       if (activeLevelFilter !== 'all' && !item.level.includes(activeLevelFilter) && !item.type.includes(activeLevelFilter)) return false;
       if (activeLangFilter === 'val-c1' && !item.valenciano.includes('C1')) return false;
@@ -350,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
       gridContainer.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-glass);">
           <div style="font-size: 3rem; margin-bottom: 1rem;">🔎</div>
-          <h3 style="font-family: var(--font-heading); margin-bottom: 0.5rem;">No se encontraron convocatorias</h3>
+          <h3 style="font-family: var(--font-heading); margin-bottom: 0.5rem;">No se encontraron convocatorias activas</h3>
           <p style="color: var(--text-secondary);">Prueba ajustando los filtros de búsqueda o cambiando el nivel del puesto.</p>
         </div>
       `;
@@ -359,10 +378,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     gridContainer.innerHTML = data.map(item => {
       const matchColor = item.matchScore >= 95 ? 'var(--accent-emerald)' : item.matchScore >= 90 ? 'var(--accent-cyan)' : 'var(--accent-amber)';
-      const deadlineClass = item.status === 'open' ? 'open' : item.status === 'urgent' ? 'urgent' : '';
+      const deadlineClass = item.status === 'open' ? 'open' : item.status === 'urgent' ? 'urgent' : item.status === 'closed' ? 'urgent' : '';
+      const statusTag = item.status === 'closed' ? '🔴 FINALIZADA / CERRADA' : item.status === 'bolsa' ? '🟣 BOLSA ACTIVA' : item.status === 'upcoming' ? '🟡 PRÓXIMA OEP' : '🟢 PLAZO ABIERTO';
 
       return `
-        <div class="conv-card">
+        <div class="conv-card" style="${item.status === 'closed' ? 'opacity: 0.7;' : ''}">
           <div>
             <div class="card-top">
               <span class="organism-badge">${item.organism}</span>
@@ -374,9 +394,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <h4 class="card-title">${item.title}</h4>
 
             <div class="card-details">
+              <span class="detail-pill"><strong>Estado:</strong> ${statusTag}</span>
               <span class="detail-pill"><strong>Nivel:</strong> ${item.level}</span>
               <span class="detail-pill"><strong>Tipo:</strong> ${item.type}</span>
-              <span class="detail-pill"><strong>Lugar:</strong> ${item.location}</span>
             </div>
 
             <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.5;">
