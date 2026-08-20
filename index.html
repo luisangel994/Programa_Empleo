@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Monitor Inteligente de Convocatorias y Empleo Público en Valencia para Ingenieros y Técnicos en Automatización. Monitoreo diario en tiempo real.">
+  <title>Monitor de Empleo Público & Convocatorias Valencia | Perfil Ingeniero & Automatización</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header class="navbar">
+    <div class="container nav-wrapper">
+      <a href="#" class="brand">
+        <div class="brand-icon">⚡</div>
+        <div class="brand-text">
+          <h1>Valencia Tech Ops</h1>
+          <span>Monitor de Empleo Público & Convocatorias</span>
+        </div>
+      </a>
+      <div class="nav-actions">
+        <div class="live-badge">
+          <span class="live-dot"></span>
+          Extracción Diaria Activa
+        </div>
+        <a href="#alertas-config" class="btn btn-outline">⚙️ Configurar Alertas Real</a>
+        <button id="btn-sync-live" class="btn btn-primary">🔄 Actualizar Convocatorias</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    
+    <!-- Hero / Profile Overview -->
+    <section class="hero-section">
+      <div class="profile-card">
+        <div class="profile-header">
+          <div class="profile-info">
+            <h2>Perfil Profesional Optimizado</h2>
+            <div class="profile-location">
+              📍 <strong>Ubicación Objetivo:</strong> Valencia y Comarca (Comunidad Valenciana)
+            </div>
+            <div class="profile-tags">
+              <span class="profile-tag">🎓 Grado en Ingeniería Electrónica Industrial (UV)</span>
+              <span class="profile-tag fp">🤖 FP Superior Automatización y Robótica Industrial</span>
+              <span class="profile-tag">🏛️ Habilitado para Grupo A1 / A2 / C1 / Laboral Fijo</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-value" id="stat-total">--</div>
+            <div class="stat-label">Convocatorias Identificadas</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-high-match" style="color: var(--accent-emerald);">--</div>
+            <div class="stat-label">Compatibilidad Alta (≥90%)</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-open" style="color: var(--accent-cyan);">--</div>
+            <div class="stat-label">Plazos Abiertos / Próximos</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-bolsas" style="color: var(--accent-purple);">--</div>
+            <div class="stat-label">Bolsas Activas / OEP 2026</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Toolbar / Search & Filters -->
+    <section class="toolbar-section">
+      <div class="toolbar-card">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search-input" class="search-input" placeholder="Buscar por organismo, puesto (ej. Mantenimiento, SCADA, Electrónica, PLC, GMAO, Profesor)...">
+        </div>
+
+        <div class="filter-group-row">
+          <div class="filter-pills" id="entity-filters">
+            <button class="filter-btn active" data-entity="all">Todas las Entidades</button>
+            <button class="filter-btn" data-entity="Ayuntamientos">Ayuntamientos</button>
+            <button class="filter-btn" data-entity="GVA">Generalitat (GVA)</button>
+            <button class="filter-btn" data-entity="Empresas Públicas">Empresas Públicas (FGV, EMT, REE)</button>
+            <button class="filter-btn" data-entity="Docencia">Docencia / FP</button>
+            <button class="filter-btn" data-entity="Estatales">Estatales (ADIF, AENA)</button>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; align-items: center;">
+            <select id="level-select" class="select-filter">
+              <option value="all">Todos los Niveles (A1/A2/C1/Laboral)</option>
+              <option value="A1">Grupo A1 (Superior Técnico)</option>
+              <option value="A2">Grupo A2 (Técnico Medio / Grado)</option>
+              <option value="C1">Grupo C1 (Técnico Especialista / FP)</option>
+              <option value="Laboral">Personal Laboral Fijo</option>
+            </select>
+
+            <select id="lang-select" class="select-filter">
+              <option value="all">Todos los Idiomas</option>
+              <option value="val-c1">Requiere Valenciano C1</option>
+              <option value="no-val">Sin Requisito Valenciano (ADIF/AENA/REE)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Convocatorias Grid -->
+    <section>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 style="font-family: var(--font-heading); font-size: 1.4rem;" id="results-count">Mostrando Convocatorias</h3>
+        <span style="font-size: 0.85rem; color: var(--text-muted);">Ordenado por porcentaje de adecuación al perfil</span>
+      </div>
+
+      <div class="cards-grid" id="convocatorias-grid">
+        <!-- Generado dinámicamente por JavaScript -->
+      </div>
+    </section>
+
+    <!-- Notification & Alert System Configuration -->
+    <section class="alerts-section" id="alertas-config">
+      <div class="alerts-header">
+        <h3>⚡ Configuración Real de Notificaciones (Email SMTP & Bot Telegram)</h3>
+        <p>Introduce tus datos reales para que el navegador y el script en Python puedan enviarte mensajes directos a tu email o Telegram.</p>
+      </div>
+
+      <form id="alerts-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="email-dest">Correo Electrónico Destino</label>
+            <input type="email" id="email-dest" class="form-control" value="luisangel994@gmail.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="telegram-token">Telegram Bot Token <small style="color: var(--accent-cyan);">(De @BotFather)</small></label>
+            <input type="text" id="telegram-token" class="form-control" placeholder="Ej: 7123456789:ABCdefGHIjklmnOPQRstuv..." value="8875701698:AAFrQE2akmicChOEmhWoA6qzrcEk4mIXy0Q">
+          </div>
+
+          <div class="form-group">
+            <label for="telegram-chat-id">Telegram Chat ID <small style="color: var(--accent-cyan);">(De @userinfobot)</small></label>
+            <input type="text" id="telegram-chat-id" class="form-control" placeholder="Ej: 123456789" value="190425566">
+          </div>
+        </div>
+
+        <!-- Guía rápida dentro de la caja de configuración -->
+        <div style="background: rgba(0,242,254,0.05); border: 1px solid rgba(0,242,254,0.2); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem; font-size: 0.875rem;">
+          <strong style="color: var(--accent-cyan);">💡 ¿Cómo hacer que funcionen los avisos reales?</strong>
+          <ul style="margin-top: 0.5rem; margin-left: 1.2rem; color: var(--text-secondary); line-height: 1.6;">
+            <li><strong>Telegram (Envío Inmediato desde la Web):</strong> 
+              1. En Telegram busca <code>@BotFather</code> y escribe <code>/newbot</code> para crear tu bot y obtener tu <strong>Token</strong>.
+              2. Busca <code>@userinfobot</code> y escribe cualquier mensaje para ver tu <strong>Chat ID</strong>.
+              3. Pégalos arriba y haz clic en <em>"💬 Probar Bot de Telegram Real"</em>. ¡Te llegará una notificación al instante!
+            </li>
+            <li><strong>Email (Envío vía Python / Gmail):</strong> 
+              Google requiere una <em>Contraseña de Aplicación</em> de Gmail para enviar emails automáticos sin bloquearse. Ejecuta en tu ordenador <code>python test_send.py</code> para probarlo de forma interactiva en 10 segundos.
+            </li>
+          </ul>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">💾 Guardar Configuración de Alertas</button>
+          <button type="button" id="btn-test-telegram" class="btn btn-outline" style="border-color: var(--accent-cyan); color: var(--accent-cyan);">💬 Probar Bot de Telegram REAL</button>
+          <button type="button" id="btn-test-email" class="btn btn-outline">📧 Probar Envío de Email (Instrucciones)</button>
+        </div>
+      </form>
+    </section>
+
+  </main>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="toast-notification">
+    <span id="toast-icon">ℹ️</span>
+    <span id="toast-message">Mensaje del sistema</span>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>Valencia Tech Ops Monitor &copy; 2026 | Sistema de Monitoreo de Empleo Público para Ingenieros en Valencia.</p>
+      <p style="margin-top: 0.4rem;">Fuentes oficiales: Punto de Acceso General (BOE), Diari Oficial de la Generalitat Valenciana (DOGV), EMT, FGV, ADIF, REE.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
