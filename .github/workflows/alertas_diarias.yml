@@ -2,9 +2,13 @@ name: Monitor Diario de Convocatorias Valencia
 
 on:
   schedule:
-    # Se ejecuta automáticamente todos los días a las 07:00 UTC (08:00 o 09:00 hora de España)
+    # Se ejecuta automáticamente todos los días a las 07:00 UTC
     - cron: '0 7 * * *'
-  workflow_dispatch: # Permite ejecución manual desde la pestaña Actions de GitHub
+  workflow_dispatch: # Permite ejecución manual desde GitHub
+
+# Permisos para poder guardar el archivo vistas.json en el repositorio
+permissions:
+  contents: write
 
 jobs:
   run-monitor:
@@ -17,7 +21,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
 
       - name: Instalar Dependencias
         run: |
@@ -26,6 +29,8 @@ jobs:
 
       - name: Ejecutar Monitor de Convocatorias
         env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           EMAIL_REMITENTE: ${{ secrets.EMAIL_REMITENTE }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           EMAIL_DESTINO: ${{ secrets.EMAIL_DESTINO }}
@@ -35,6 +40,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action Bot"
-          git add vistas.json
+          git add vistas.json || exit 0
           git commit -m "chore: actualizar histórico de convocatorias [skip ci]" || exit 0
-          git push
+          git push || exit 0
