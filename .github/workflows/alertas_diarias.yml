@@ -2,8 +2,8 @@ name: Monitor Diario de Convocatorias Valencia
 
 on:
   schedule:
-    # Se ejecuta automáticamente todos los días a las 07:00 UTC
-    - cron: '0 7 * * *'
+    # Se ejecuta automáticamente todos los días a las 06:00 UTC (08:00 AM hora de España en verano / 07:00 AM en invierno)
+    - cron: '0 6 * * *'
   workflow_dispatch: # Permite ejecución manual desde GitHub
 
 permissions:
